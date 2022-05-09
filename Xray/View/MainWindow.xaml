@@ -3,34 +3,55 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Xray"
         xmlns:viewModel="clr-namespace:Xray.ViewModel"
-        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="Transparent"
-        ResizeMode="CanMinimize"
         WindowStyle="None"
-        Visibility="{Binding WindowVisibility}"
-        DataContext="{Binding MainViewModel,Source={StaticResource Locator}}">
+        ResizeMode="CanMinimize"
+        Title="Reader" Height="450" Width="800" Background="Transparent"
+        x:Name="Root">
+    <!--DataContext="{Binding MainViewModel,Source={StaticResource Locator}}">-->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" GlassFrameThickness="-1" x:Name="WindowChrome" />
+    </WindowChrome.WindowChrome>
+    <Window.Style>
+        <Style TargetType="Window">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ShowWindowChrome}" Value="True">
+                    <Setter Property="ResizeMode" Value="CanResize" />
+                    <Setter Property="WindowStyle" Value="SingleBorderWindow" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ShowWindowChrome}" Value="False">
+                    <Setter Property="ResizeMode" Value="CanMinimize" />
+                    <Setter Property="WindowStyle" Value="None" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+    <Window.DataContext>
+        <viewModel:MainViewModel />
+    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="Paragraph">
-            <Setter Property="FontSize" Value="{Binding DocumentStyleViewModel.FontSize,Source ={StaticResource Locator}}"></Setter>
-            <Setter Property="FontFamily" Value="{Binding DocumentStyleViewModel.Font,Source ={StaticResource Locator}}"></Setter>
+            <Setter Property="FontSize"
+                    Value="{Binding DocumentStyleViewModel.FontSize,Source ={StaticResource Locator}}" />
+            <Setter Property="FontFamily"
+                    Value="{Binding DocumentStyleViewModel.Font,Source ={StaticResource Locator}}" />
+            <Setter Property="Foreground"
+                    Value="{Binding DocumentStyleViewModel.FontColor,Source={StaticResource Locator}}" />
         </Style>
-        <FlowDocument Background="Transparent" x:Key="DefaultDocument">
-            <Paragraph>
-                E : Hide menu bar
-            </Paragraph>
-            <Paragraph>
-                CTRL +1 : To transparent background
-            </Paragraph>
-        </FlowDocument>
-        <SolidColorBrush Color="Transparent" x:Key="TransparentBg"></SolidColorBrush>
-        <SolidColorBrush Color="White" x:Key="WhiteBg"></SolidColorBrush>
+        <SolidColorBrush Color="Transparent" x:Key="TransparentBg" />
+        <SolidColorBrush Color="White" x:Key="WhiteBg" />
+        <Style TargetType="Grid" x:Key="ContentPresenter">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsTransparent}" Value="False">
+                    <Setter Property="Background" Value="{StaticResource WhiteBg}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsTransparent}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource TransparentBg}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
-    <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="0" GlassFrameThickness="-1"/>
-    </WindowChrome.WindowChrome>
     <Window.InputBindings>
         <KeyBinding Key="E" Command="{Binding SetMainMenuVisibleCommand}" />
         <KeyBinding Key="A" Command="NavigationCommands.PreviousPage" CommandTarget="{Binding ElementName=Reader}" />
@@ -41,33 +62,30 @@
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding LoadDocumentCommand}" />
         <KeyBinding Key="Oem3" Modifiers="Control" Command="{Binding SetWindowVisibility}" />
         <KeyBinding Key="D1" Modifiers="Control" Command="{Binding SetBackgroundCommand}" />
-        <KeyBinding Key="Up" Modifiers="Control" Command="{Binding DocumentStyleViewModel.IncreaseFontSizeCommand, Source={StaticResource Locator}}"></KeyBinding>
+        <KeyBinding Key="Up" Modifiers="Control"
+                    Command="{Binding DocumentStyleViewModel.IncreaseFontSizeCommand, Source={StaticResource Locator}}" />
+        <KeyBinding Key="Down" Modifiers="Control"
+                    Command="{Binding DocumentStyleViewModel.DecreaseFontSizeCommand, Source={StaticResource Locator}}" />
     </Window.InputBindings>
 
     <Grid Background="Transparent">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Menu Grid.Row="0" Visibility="{Binding MainMenuVisible}">
+        <Menu Grid.Row="0" Visibility="{Binding ShowWindowChrome}">
             <MenuItem Header="Settings">
                 <MenuItem Header="Load" Command="{Binding LoadDocumentCommand}" />
                 <Separator />
-                <MenuItem Header="Exit" Command="{Binding ExitCommand}"></MenuItem>
+                <MenuItem Header="Settings" Command="{Binding CallSettingsPageCommand}" />
+                <Separator />
+                <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
             </MenuItem>
         </Menu>
-        <Grid Grid.Row="1" MouseDown="DocumentViewerMouseDown" Background="{StaticResource WhiteBg}">
-            <Grid.Style>
-                <Style TargetType="Grid" >
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsTransparent}"  Value="True">
-                            <Setter Property="Background" Value="{StaticResource TransparentBg}"></Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
+        <Grid Grid.Row="1" MouseDown="DocumentViewerMouseDown"
+              Style="{StaticResource ContentPresenter}">
             <FlowDocumentScrollViewer x:Name="Reader" IsEnabled="False" VerticalScrollBarVisibility="Hidden"
-                                      Document="{Binding Document, FallbackValue={StaticResource DefaultDocument}}" />
+                                      Background="Transparent" Document="{Binding Document}" />
         </Grid>
     </Grid>
 </Window>

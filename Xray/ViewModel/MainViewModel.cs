@@ -1,57 +1,51 @@
-﻿// =============================================================
-// Package:     Xray
-// FileName:    MainViewModel.cs
-// Author:      Hongwei Liu(Hongwei.Liu@pppharmapack.com)
-// CreateDate:  2022/05/09
-// EditDate:    2022/05/09
-// CopyRight:   Copyright (c) 2022-2022 XingyangTechnology
-// =============================================================
-
-using System;
+﻿using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Win32;
+using Xray.View;
 
 namespace Xray.ViewModel;
 
 public class MainViewModel : ViewModelBase
 {
+    private static readonly SolidColorBrush WhiteBrush = new(Colors.White);
+    private static readonly SolidColorBrush TransparentBrush = new(Colors.Transparent);
+    private RelayCommand? _callSettingsPageCommand;
+    private FlowDocument? _document;
+    private RelayCommand? _exitCommand;
+    private bool _isTransparent;
+    private RelayCommand? _loadDocumentCommand;
+    private RelayCommand? _setBackgroundCommand;
     private ICommand? _setMainMenuVisibleCommand;
     private ICommand? _setWindowVisibility;
-    private Visibility _mainMenuVisible;
-    private FlowDocument? _document;
-    private RelayCommand? _loadDocumentCommand;
-    private RelayCommand? _exitCommand;
-    private RelayCommand? _setBackgroundCommand;
-    private SolidColorBrush _background = WhiteBrush;
-    private bool _isTransparent;
-    public MainViewModel() { }
+    private Visibility _showWindowChrome;
 
-    public Visibility MainMenuVisible
+    public MainViewModel()
     {
-        get => _mainMenuVisible;
-        set => SetProperty(ref _mainMenuVisible, value);
+        _document = new FlowDocument();
+
+        _document.Blocks.Add(new Paragraph(new Run("E : Hide menu bar")));
+        _document.Blocks.Add(new Paragraph(new Run("CTRL +1 : To transparent background")));
+        _document.Blocks.Add(new Paragraph(new Run("A,D: Previous & Next page")));
+        _document.Blocks.Add(new Paragraph(new Run("←,→: Previous & Next page")));
+        _document.Blocks.Add(new Paragraph(new Run("CTRL+O: Open file")));
+        _document.Blocks.Add(new Paragraph(new Run("CTRL+↑/↓：Font size up/down")));
+    }
+
+    public Visibility ShowWindowChrome
+    {
+        get => _showWindowChrome;
+        set => SetProperty(ref _showWindowChrome, value);
     }
 
     public ICommand SetMainMenuVisibleCommand => _setMainMenuVisibleCommand ??= new RelayCommand(SetMainMenuVisible);
 
-    private void SetMainMenuVisible()
-    {
-        MainMenuVisible = MainMenuVisible == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-    }
-
     public Visibility WindowVisibility { get; set; }
 
     public ICommand SetWindowVisibility => _setWindowVisibility ??= new RelayCommand(SetWindowVisibilityFunc);
-
-    private void SetWindowVisibilityFunc()
-    {
-        WindowVisibility = WindowVisibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-    }
 
     public FlowDocument? Document
     {
@@ -61,33 +55,7 @@ public class MainViewModel : ViewModelBase
 
     public ICommand LoadDocumentCommand => _loadDocumentCommand ??= new RelayCommand(LoadDocument);
 
-    private void LoadDocument()
-    {
-        var openFileDialog = new OpenFileDialog() { Filter = "文本文件|*.txt" };
-        if (openFileDialog.ShowDialog() == true)
-        {
-            var path = openFileDialog.FileName;
-            var content = System.IO.File.ReadAllText(path);
-            Document = new FlowDocument();
-            Document.PageWidth = double.NaN;
-            Document.ColumnWidth = double.NaN;
-
-            foreach (var line in content.Split('\n'))
-            {
-                Document.Blocks.Add(new Paragraph(new Run(line)));
-            }
-        }
-    }
-
     public ICommand ExitCommand => _exitCommand ??= new RelayCommand(Exit);
-
-    private void Exit()
-    {
-        App.Current.Shutdown();
-    }
-
-    private static readonly SolidColorBrush WhiteBrush = new SolidColorBrush(Colors.White);
-    private static readonly SolidColorBrush TransparentBrush = new SolidColorBrush(Colors.Transparent);
 
     public bool IsTransparent
     {
@@ -97,8 +65,46 @@ public class MainViewModel : ViewModelBase
 
     public ICommand SetBackgroundCommand => _setBackgroundCommand ??= new RelayCommand(SetBackground);
 
+    public ICommand CallSettingsPageCommand => _callSettingsPageCommand ??= new RelayCommand(CallSettingsPage);
+
+    private void SetMainMenuVisible()
+    {
+        ShowWindowChrome = ShowWindowChrome == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private void SetWindowVisibilityFunc()
+    {
+        WindowVisibility = WindowVisibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+    }
+
+    private void LoadDocument()
+    {
+        var openFileDialog = new OpenFileDialog {Filter = "文本文件|*.txt"};
+        if (openFileDialog.ShowDialog() == true)
+        {
+            var path = openFileDialog.FileName;
+            var content = File.ReadAllText(path);
+            Document = new FlowDocument();
+            Document.PageWidth = double.NaN;
+            Document.ColumnWidth = double.NaN;
+
+            foreach (var line in content.Split('\n')) Document.Blocks.Add(new Paragraph(new Run(line)));
+        }
+    }
+
+    private void Exit()
+    {
+        Application.Current.Shutdown();
+    }
+
     private void SetBackground()
     {
         IsTransparent = !IsTransparent;
+    }
+
+    private void CallSettingsPage()
+    {
+        var settingsPage = new Settings();
+        settingsPage.Show();
     }
 }

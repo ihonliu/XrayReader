@@ -1,26 +1,18 @@
-﻿// =============================================================
-// Package:     Xray
-// FileName:    ViewModelLocator.cs
-// Author:      Hongwei Liu(Hongwei.Liu@pppharmapack.com)
-// CreateDate:  2022/05/09
-// EditDate:    2022/05/09
-// CopyRight:   Copyright (c) 2022-2022 XingyangTechnology
-// =============================================================
-
-using DryIoc;
+﻿using DryIoc;
 
 namespace Xray.ViewModel;
 
 public class ViewModelLocator
 {
     private readonly Container _container;
+
     public ViewModelLocator()
     {
         _container = new Container();
 
-        _container.Register<MainViewModel>();
-        _container.Register<SettingsViewModel>();
-        _container.Register<DocumentStyleViewModel>();
+        _container.Register<MainViewModel>(new SingletonReuse());
+        _container.Register<SettingsViewModel>(new SingletonReuse());
+        _container.Register<DocumentStyleViewModel>(new SingletonReuse());
     }
 
     public MainViewModel MainViewModel => _container.Resolve<MainViewModel>();

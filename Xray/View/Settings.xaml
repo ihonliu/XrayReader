@@ -3,10 +3,30 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Xray.View"
         mc:Ignorable="d"
-        Title="Settings" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="Settings">
+
+    <StackPanel DataContext="{Binding DocumentStyleViewModel,Source={StaticResource Locator}}" Margin="10">
+        <Grid HorizontalAlignment="Left" Width="400" MinWidth="200">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="7*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Font" HorizontalAlignment="Center" />
+            <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding AvailableFonts}" DisplayMemberPath="Source"
+                      SelectedItem="{Binding Font}" />
+            <Label Grid.Column="0" Grid.Row="1" Content="Font size" HorizontalAlignment="Center" />
+            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding FontSize}" VerticalContentAlignment="Center" />
+            <Label Grid.Column="0" Grid.Row="2" Content="Font color" HorizontalAlignment="Center" />
+            <!--<cp:ColorPickRow Grid.Column="1" Grid.Row="2" Color="{Binding FontColor}"></cp:ColorPickRow>-->
+            <Button Grid.Column="1" Grid.Row="2" Content="Pick a color" VerticalContentAlignment="Center"
+                    Command="{Binding PickColorCommand}" />
+        </Grid>
+    </StackPanel>
 </Window>
