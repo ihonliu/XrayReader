@@ -15,6 +15,7 @@ public partial class MainWindow : Window
 
     private void DocumentViewerMouseDown(object sender, MouseButtonEventArgs e)
     {
-        DragMove();
+        if (e.LeftButton == MouseButtonState.Pressed)
+            DragMove();
     }
 }
