@@ -5,6 +5,13 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <DebugType>none</DebugType>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/ihonliu/XrayReader</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ihonliu/XrayReader</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <AssemblyVersion>1.1.0.1</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

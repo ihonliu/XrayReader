@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace Xray.Services
 {
-    public class PersistService<TConfig> : IDisposable where TConfig : class
+    public class PersistService<TConfig> : IDisposable where TConfig : class, new()
     {
         public TConfig Instance { get; private set; }
 
@@ -25,6 +25,8 @@ namespace Xray.Services
                 if (config != null)
                     Instance = config;
             }
+
+            Instance ??= new TConfig();
         }
 
         public void Save()
