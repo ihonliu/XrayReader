@@ -33,6 +33,9 @@ public class MainViewModel : ViewModelBase
         _document.Blocks.Add(new Paragraph(new Run("←,→: Previous & Next page")));
         _document.Blocks.Add(new Paragraph(new Run("CTRL+O: Open file")));
         _document.Blocks.Add(new Paragraph(new Run("CTRL+↑/↓：Font size up/down")));
+        _document.Blocks.Add(new Paragraph(new Run("CTRL+`：Hide")));
+        _document.Blocks.Add(new Paragraph(new Run("Space：Hide")));
+        _document.Blocks.Add(new Paragraph(new Run("CTRL+ALT+`：UnHide")));
     }
 
     public Visibility ShowWindowChrome
@@ -42,10 +45,6 @@ public class MainViewModel : ViewModelBase
     }
 
     public ICommand SetMainMenuVisibleCommand => _setMainMenuVisibleCommand ??= new RelayCommand(SetMainMenuVisible);
-
-    public Visibility WindowVisibility { get; set; }
-
-    public ICommand SetWindowVisibility => _setWindowVisibility ??= new RelayCommand(SetWindowVisibilityFunc);
 
     public FlowDocument? Document
     {
@@ -70,11 +69,6 @@ public class MainViewModel : ViewModelBase
     private void SetMainMenuVisible()
     {
         ShowWindowChrome = ShowWindowChrome == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-    }
-
-    private void SetWindowVisibilityFunc()
-    {
-        WindowVisibility = WindowVisibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
     }
 
     private void LoadDocument()

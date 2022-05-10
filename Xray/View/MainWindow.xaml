@@ -6,12 +6,12 @@
         xmlns:viewModel="clr-namespace:Xray.ViewModel"
         mc:Ignorable="d"
         WindowStyle="None"
-        ResizeMode="CanMinimize"
-        Title="Reader" Height="450" Width="800" Background="Transparent"
-        x:Name="Root" DataContext="{Binding MainViewModel,Source={StaticResource Locator}}">
-    <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="0" ResizeBorderThickness="10" GlassFrameThickness="-1"/>
-    </WindowChrome.WindowChrome>
+        ResizeMode="CanResizeWithGrip"
+        Title="Reader" Height="450" Width="800" Background="#01000000"
+        AllowsTransparency="True"
+        DataContext="{Binding MainViewModel,Source={StaticResource Locator}}" KeyDown="MainWindow_OnKeyDown"
+        Loaded="MainWindow_OnLoaded"
+        Closed="MainWindow_OnClosed">
     <Window.Style>
         <Style TargetType="Window">
             <Style.Triggers>
@@ -56,7 +56,6 @@
         <KeyBinding Key="Right" Command="NavigationCommands.NextPage" CommandTarget="{Binding ElementName=Reader}" />
         <KeyBinding Key="W" Modifiers="Control" Command="{Binding ExitCommand}" />
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding LoadDocumentCommand}" />
-        <KeyBinding Key="Oem3" Modifiers="Control" Command="{Binding SetWindowVisibility}" />
         <KeyBinding Key="D1" Modifiers="Control" Command="{Binding SetBackgroundCommand}" />
         <KeyBinding Key="Up" Modifiers="Control"
                     Command="{Binding DocumentStyleViewModel.IncreaseFontSizeCommand, Source={StaticResource Locator}}" />
