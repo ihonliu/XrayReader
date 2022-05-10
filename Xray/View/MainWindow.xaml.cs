@@ -41,11 +41,20 @@ public partial class MainWindow : Window
                 Show();
             }));
             var bounds = locator.PersistService.Instance.WindowBounds;
-            Left = bounds.Left;
-            Top = bounds.Top;
-            Width = bounds.Width;
-            Height = bounds.Height;
-            //locator.PersistService.WindowBounds = new Rect(new Point(Left, Top), new Size(Width, Height));
+            var workArea = SystemParameters.WorkArea;
+            if (!workArea.Contains(bounds))
+            {
+                bounds = workArea;
+            }
+            SetWindow(bounds);
+
+            void SetWindow(Rect area)
+            {
+                Left = area.Left;
+                Top = area.Top;
+                Width = area.Width < 300 ? 300 : area.Width;
+                Height = area.Height < 200 ? 200 : area.Height;
+            }
         }
     }
 
