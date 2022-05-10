@@ -8,10 +8,9 @@
         WindowStyle="None"
         ResizeMode="CanMinimize"
         Title="Reader" Height="450" Width="800" Background="Transparent"
-        x:Name="Root">
-    <!--DataContext="{Binding MainViewModel,Source={StaticResource Locator}}">-->
+        x:Name="Root" DataContext="{Binding MainViewModel,Source={StaticResource Locator}}">
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="0" GlassFrameThickness="-1" x:Name="WindowChrome" />
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="10" GlassFrameThickness="-1"/>
     </WindowChrome.WindowChrome>
     <Window.Style>
         <Style TargetType="Window">
@@ -27,9 +26,6 @@
             </Style.Triggers>
         </Style>
     </Window.Style>
-    <Window.DataContext>
-        <viewModel:MainViewModel />
-    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="Paragraph">
             <Setter Property="FontSize"
@@ -68,7 +64,7 @@
                     Command="{Binding DocumentStyleViewModel.DecreaseFontSizeCommand, Source={StaticResource Locator}}" />
     </Window.InputBindings>
 
-    <Grid Background="Transparent">
+    <Grid Background="Transparent" Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
